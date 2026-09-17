@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "sepa-xml-validator-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/sepaXmlValidator/SepaXmlValidatorWebPart.js",
+          "manifest": "./src/webparts/sepaXmlValidator/SepaXmlValidatorWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "SepaXmlValidatorWebPartStrings": "lib/webparts/sepaXmlValidator/loc/{locale}.js"
+  }
+}

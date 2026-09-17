@@ -1,0 +1,23 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "whichFolder": "subdir",
+    "solutionName": "sepa-xml-validator",
+    "environment": "spo",
+    "packageManager": "npm",
+    "useGulp": false,
+    "componentType": "webpart",
+    "template": "react",
+    "componentName": "SepaXmlValidator",
+    "componentDescription": "SEPA XML validator for SharePoint Online",
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "22.14.0",
+    "sdksVersions": {},
+    "version": "1.23.2",
+    "libraryName": "sepa-xml-validator",
+    "libraryId": "dc860117-10c4-4d71-9a5d-ff9f5cc25955",
+    "solutionShortDescription": "sepa-xml-validator description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false
+  }
+}

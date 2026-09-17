@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "sepa-xml-validator-client-side-solution",
+    "id": "dc860117-10c4-4d71-9a5d-ff9f5cc25955",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.23.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "sepa-xml-validator description"
+      },
+      "longDescription": {
+        "default": "sepa-xml-validator description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "sepa-xml-validator Feature",
+        "description": "The feature that activates elements of the sepa-xml-validator solution.",
+        "id": "bbd9f1d4-e933-41e7-9089-4873c15502e9",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/sepa-xml-validator.sppkg"
+  }
+}
