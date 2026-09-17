@@ -3,27 +3,41 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
-# Project-specific generated files
+# Node / package manager
 node_modules/
-dist/
 coverage/
 .vite/
 *.log
-*.sppkg
+npm-debug.log*
 
-# User-specific files
+# Build output
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# SharePoint package output
+*.sppkg
+*.spkg
+
+# Local environment / secrets
+.env
+.env.*
+
+# Editor / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Legacy Visual Studio entries retained for compatibility
 *.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
-*.env
-
-# Local editor and OS files
-.vscode/
-.DS_Store
-
-# User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
 # Mono auto generated files
