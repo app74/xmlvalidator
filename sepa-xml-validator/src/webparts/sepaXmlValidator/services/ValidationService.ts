@@ -55,6 +55,30 @@ function getIssuesForCountry(xml: string): ValidationIssue[] {
   return issues;
 }
 
+function getIssuesForBic(xml: string): ValidationIssue[] {
+  const items = getAllElementsByLocalName(xml, 'BIC');
+  const issues: ValidationIssue[] = [];
+
+  for (let index = 0; index < items.length; index += 1) {
+    const item = items[index];
+    if (/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(item.value)) {
+      continue;
+    }
+
+    issues.push({
+      type: 'bic',
+      severity: 'error',
+      message: 'BIC má neplatný formát.',
+      line: item.line,
+      column: item.column,
+      xmlLine: xml.split(/\r?\n/)[item.line - 1] || '',
+      recommendation: 'BIC musí mať 8 alebo 11 veľkých alfanumerických znakov.'
+    });
+  }
+
+  return issues;
+}
+
 function getIssuesForIban(xml: string): { issues: ValidationIssue[]; total: number; unique: number; invalid: string[] } {
   const items = getAllElementsByLocalName(xml, 'IBAN');
   const sanitized = items.map(function (item) { return item.value.replace(/\s+/g, '').toUpperCase(); });
@@ -164,6 +188,7 @@ export function validateSepaDocument(xml: string, fileName: string, fileSize: nu
   const structureIssues = findXmlStructureIssues(xml);
   const suspicious = findSuspiciousCharacters(xml);
   const countryIssues = getIssuesForCountry(xml);
+  const bicIssues = getIssuesForBic(xml);
   const ibanResult = getIssuesForIban(xml);
   const transactionResult = getIssuesForTransactionCount(xml);
   const controlSumResult = getIssuesForControlSum(xml);
@@ -191,6 +216,7 @@ export function validateSepaDocument(xml: string, fileName: string, fileSize: nu
       };
     }),
     countryIssues,
+    bicIssues,
     ibanResult.issues,
     transactionResult.issues,
     controlSumResult.issues
@@ -212,6 +238,7 @@ export function validateSepaDocument(xml: string, fileName: string, fileSize: nu
       };
     }) },
     { id: 'ctry', name: 'Ctry', status: countryIssues.length > 0 ? 'error' : 'ok', issues: countryIssues },
+    { id: 'bic', name: 'BIC', status: bicIssues.length > 0 ? 'error' : 'ok', issues: bicIssues },
     { id: 'iban', name: 'IBAN', status: ibanResult.issues.length > 0 ? 'error' : 'ok', issues: ibanResult.issues },
     { id: 'nb-of-txs', name: 'NbOfTxs', status: transactionResult.issues.length > 0 ? 'error' : 'ok', issues: transactionResult.issues },
     { id: 'ctrl-sum', name: 'CtrlSum', status: controlSumResult.issues.length > 0 ? 'error' : 'ok', issues: controlSumResult.issues }

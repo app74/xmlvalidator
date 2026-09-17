@@ -21,6 +21,6 @@ This repository is intended to implement a SEPA XML validator for payment files.
 ## Project flow
 1. Validate raw XML structure and reject unsafe / DTD / entity declarations.
 2. Scan for suspicious characters before semantic validation.
-3. Validate Ctry, IBAN, NbOfTxs and CtrlSum.
+3. Validate Ctry, BIC, IBAN, NbOfTxs and CtrlSum.
 4. Produce a summary and issue list without altering the original file.
 5. Keep the architecture ready for a later SharePoint SPFx UI layer.

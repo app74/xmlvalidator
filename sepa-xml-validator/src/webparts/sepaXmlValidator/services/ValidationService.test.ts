@@ -52,4 +52,11 @@ describe('validateSepaDocument', () => {
     expect(result.checks[0].status).toBe('error');
     expect(result.issues.some((issue) => issue.message.indexOf('očakáva sa </Nm>') >= 0)).toBe(true);
   });
+
+  it('detects an invalid BIC format', () => {
+    const xml = '<Document><BIC>CEKOSKBXz</BIC></Document>';
+    const result = validateSepaDocument(xml, 'invalid-bic.xml', xml.length);
+
+    expect(result.checks.find((check) => check.id === 'bic')?.status).toBe('error');
+  });
 });

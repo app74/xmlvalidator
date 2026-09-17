@@ -31,7 +31,7 @@ describe('RepairService', () => {
   });
 
   it('applies a control-character repair at the correct position in CRLF XML', () => {
-    const xml = '<Document>\r\n  <Nm>Nov' + '\u001A' + 'k</Nm>\r\n</Document>';
+    const xml = '<Document>\r\n  <Nm>Nov\u001Ak</Nm>\r\n</Document>';
     const result = validateSepaDocument(xml, 'input.xml', xml.length);
     const proposals = getRepairProposals(xml, result);
     const proposal = proposals.filter((item) => item.before === '\u001A')[0];
@@ -40,5 +40,16 @@ describe('RepairService', () => {
     const repaired = applyRepair(xml, proposal);
     expect(repaired).toBe('<Document>\r\n  <Nm>Novk</Nm>\r\n</Document>');
     expect(validateSepaDocument(repaired, 'input.xml', repaired.length).issues).toHaveLength(0);
+  });
+
+  it('proposes removing an extra lowercase character from a BIC', () => {
+    const xml = '<Document><BIC>CEKOSKBXz</BIC></Document>';
+    const result = validateSepaDocument(xml, 'input.xml', xml.length);
+    const proposals = getRepairProposals(xml, result);
+    const proposal = proposals.filter((item) => item.id === 'bic-0')[0];
+
+    expect(proposal).toBeDefined();
+    expect(proposal.after).toBe('CEKOSKBX');
+    expect(validateSepaDocument(applyRepair(xml, proposal), 'input.xml', xml.length).checks.find((check) => check.id === 'bic')?.status).toBe('ok');
   });
 });

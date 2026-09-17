@@ -20,6 +20,7 @@ For the SharePoint implementation, use:
 - [x] Validate XML element pairing and report mismatched or unclosed tags.
 - [x] Scan raw XML text for suspicious or non-printable characters.
 - [x] Extract Ctry values and validate exact uppercase two-letter format.
+- [x] Extract BIC values and validate 8- or 11-character uppercase format.
 - [x] Extract IBAN values and validate checksum and syntax.
 - [x] Read NbOfTxs and compare against actual InstdAmt count.
 - [x] Read CtrlSum and compare against exact sum of InstdAmt in cents.

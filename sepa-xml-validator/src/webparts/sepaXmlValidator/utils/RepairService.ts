@@ -150,6 +150,23 @@ export function getRepairProposals(xml: string, result: SepaValidationResult): R
     }
   }
 
+  const bicElements = getElements(xml, 'BIC');
+  bicElements.forEach(function (element, index) {
+    if (/^[A-Z]{8}[a-z]$/.test(element.value)) {
+      const proposal = createProposal(
+        'bic-' + index,
+        'Opraviť BIC',
+        'Odstráni jednoznačne nadbytočný deviaty znak z BIC.',
+        element,
+        element.value.slice(0, 8),
+        'Overte BIC voči bankovým údajom. Oprava odstráni iba koncový znak navyše.'
+      );
+      if (proposal) {
+        proposals.push(proposal);
+      }
+    }
+  });
+
   const controlSumElements = getElements(xml, 'CtrlSum');
   const calculatedAmount = getCalculatedAmount(xml);
   if (controlSumElements.length > 0 && calculatedAmount !== undefined && result.issues.some(function (issue) { return issue.type === 'control-sum'; })) {

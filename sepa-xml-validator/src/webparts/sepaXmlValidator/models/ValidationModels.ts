@@ -5,6 +5,7 @@ export type ValidationIssueType =
   | 'xml-structure'
   | 'suspicious-character'
   | 'country'
+  | 'bic'
   | 'iban'
   | 'transaction-count'
   | 'control-sum'

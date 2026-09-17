@@ -20,7 +20,7 @@ Open the URL printed by Vite, usually `http://localhost:5173`.
 2. Check the summary, validation checks, and issue list.
 3. Download both TXT and CSV reports.
 4. Use the step-by-step repair panel, review the original and proposed value, and explicitly apply or skip each suggestion.
-5. Try valid XML, an invalid `Ctry` or IBAN, mismatched `NbOfTxs`/`CtrlSum`, and XML containing `DOCTYPE` or an entity declaration.
+5. Try valid XML, an invalid `Ctry`, BIC, or IBAN, mismatched `NbOfTxs`/`CtrlSum`, mismatched XML tags, and XML containing `DOCTYPE` or an entity declaration.
 
 Only deterministic repairs are offered. Invalid IBANs and `DOCTYPE`/entity declarations remain manual-only findings. After every applied repair, the XML is validated again and the final status is shown.
 

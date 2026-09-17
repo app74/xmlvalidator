@@ -7,8 +7,10 @@ Tento projekt připravuje validator SEPA platebních XML souborů pro SharePoint
 Aplikace je navržena jako webová část SharePoint Framework (SPFx) pro interní ověření SEPA před uploadem do banky. V současné verzi je připraven základ core validátorů a testů, které jsou odladěné pro deterministické ověření:
 
 - XML struktura a bezpečnostní kontrola
+- párování XML tagů
 - podezřelé / neviditelné znaky
 - Ctry
+- BIC
 - IBAN
 - NbOfTxs
 - CtrlSum
