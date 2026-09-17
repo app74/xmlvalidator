@@ -62,3 +62,17 @@ export function downloadReport(result: SepaValidationResult, format: 'txt' | 'cs
   document.body.removeChild(anchor);
   URL.revokeObjectURL(url);
 }
+
+export function downloadXml(xml: string, fileName: string): void {
+  const blob = new Blob([xml], { type: 'application/xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  const baseName = fileName.replace(/\.xml$/i, '');
+
+  anchor.href = url;
+  anchor.download = baseName + '-opravene.xml';
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+  URL.revokeObjectURL(url);
+}

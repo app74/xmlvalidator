@@ -92,4 +92,12 @@ describe('SEPA XML validator core logic', () => {
     const result = validateSepaXml(xml, 'ns.xml', 1024);
     expect(result.overallStatus).toBe('ok');
   });
+
+  it('uses the shared XML structure validation', () => {
+    const xml = '<Document><Nm>DIR - LINE s. r. o.</N></Document>';
+    const result = validateSepaXml(xml, 'mismatched-tag.xml', xml.length);
+
+    expect(result.xmlWellFormed).toBe(false);
+    expect(result.checks.find((check) => check.id === 'xml-structure')?.status).toBe('error');
+  });
 });

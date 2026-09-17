@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { validateSepaDocument } from '../../sepa-xml-validator/src/webparts/sepaXmlValidator/services/ValidationService';
 import { SepaValidationResult } from '../../sepa-xml-validator/src/webparts/sepaXmlValidator/models/ValidationModels';
-import { downloadReport } from '../../sepa-xml-validator/src/webparts/sepaXmlValidator/utils/ReportExport';
+import { downloadReport, downloadXml } from '../../sepa-xml-validator/src/webparts/sepaXmlValidator/utils/ReportExport';
+import { applyRepair, getRepairProposals, RepairProposal } from '../../sepa-xml-validator/src/webparts/sepaXmlValidator/utils/RepairService';
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) {
@@ -16,17 +17,29 @@ export default function App(): React.ReactElement {
   const [isReading, setIsReading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string>();
+  const [xmlSource, setXmlSource] = useState<string>();
+  const [repairXml, setRepairXml] = useState<string>();
+  const [repairProposals, setRepairProposals] = useState<RepairProposal[]>([]);
+  const [hasAppliedRepair, setHasAppliedRepair] = useState(false);
 
   const validateFile = (file: File): void => {
     if (!file.name.toLowerCase().endsWith('.xml')) {
       setError('Vyberte súbor s príponou .xml.');
       setResult(undefined);
+      setXmlSource(undefined);
+      setRepairXml(undefined);
+      setRepairProposals([]);
+      setHasAppliedRepair(false);
       return;
     }
 
     setIsReading(true);
     setError(undefined);
     setResult(undefined);
+    setXmlSource(undefined);
+    setRepairXml(undefined);
+    setRepairProposals([]);
+    setHasAppliedRepair(false);
     const reader = new FileReader();
 
     reader.onload = (): void => {
@@ -35,7 +48,11 @@ export default function App(): React.ReactElement {
         if (!xml) {
           throw new Error('Súbor sa nepodarilo načítať ako text.');
         }
-        setResult(validateSepaDocument(xml, file.name, file.size));
+        const validation = validateSepaDocument(xml, file.name, file.size);
+        setXmlSource(xml);
+        setRepairXml(xml);
+        setRepairProposals(getRepairProposals(xml, validation));
+        setResult(validation);
       } catch (readError) {
         setError(readError instanceof Error ? readError.message : 'Súbor sa nepodarilo overiť.');
       } finally {
@@ -48,6 +65,22 @@ export default function App(): React.ReactElement {
       setError('Súbor sa nepodarilo načítať.');
     };
     reader.readAsText(file, 'UTF-8');
+  };
+
+  const applyNextRepair = (): void => {
+    if (!repairXml || !result || repairProposals.length === 0) {
+      return;
+    }
+    const updatedXml = applyRepair(repairXml, repairProposals[0]);
+    const updatedResult = validateSepaDocument(updatedXml, result.fileName, new Blob([updatedXml]).size);
+    setRepairXml(updatedXml);
+    setResult(updatedResult);
+    setRepairProposals(getRepairProposals(updatedXml, updatedResult));
+    setHasAppliedRepair(true);
+  };
+
+  const skipNextRepair = (): void => {
+    setRepairProposals(repairProposals.slice(1));
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>): void => {
@@ -123,9 +156,29 @@ export default function App(): React.ReactElement {
           </div>
 
           <div className="actions">
+            {repairXml && <button type="button" onClick={() => downloadXml(repairXml, result.fileName)}>Stiahnuť aktuálne XML</button>}
             <button type="button" onClick={() => downloadReport(result, 'txt')}>Stiahnuť TXT report</button>
             <button type="button" onClick={() => downloadReport(result, 'csv')}>Stiahnuť CSV report</button>
           </div>
+
+          {repairXml && repairProposals.length > 0 && (
+            <RepairPanel
+              proposal={repairProposals[0]}
+              step={1}
+              total={repairProposals.length}
+              onApply={applyNextRepair}
+              onSkip={skipNextRepair}
+            />
+          )}
+          {repairXml && repairProposals.length === 0 && xmlSource && result.issues.length > 0 && (
+            <p className="notice notice--warning">Pre zostávajúce nálezy nie je dostupná bezpečná automatická oprava. Overte ich manuálne.</p>
+          )}
+          {repairXml && repairProposals.length === 0 && xmlSource && hasAppliedRepair && result.issues.length === 0 && (
+            <p className="notice notice--success">Finálna kontrola opraveného XML prešla bez nálezov.</p>
+          )}
+          {repairXml && repairProposals.length === 0 && xmlSource && !hasAppliedRepair && result.issues.length === 0 && (
+            <p className="notice notice--success">XML je v poriadku.</p>
+          )}
 
           <h3>Kontroly</h3>
           <div className="checks">
@@ -157,5 +210,29 @@ function Metric(props: { label: string; value: string }): React.ReactElement {
       <span>{props.label}</span>
       <strong>{props.value}</strong>
     </div>
+  );
+}
+
+function RepairPanel(props: { proposal: RepairProposal; step: number; total: number; onApply: () => void; onSkip: () => void }): React.ReactElement {
+  return (
+    <section className="repair-panel" aria-labelledby="repair-heading">
+      <div className="repair-panel__heading">
+        <div>
+          <span className="result-banner__label">Krok {props.step} z {props.total}</span>
+          <h3 id="repair-heading">{props.proposal.title}</h3>
+        </div>
+        <span className="status status--warning">POTVRDIŤ</span>
+      </div>
+      <p>{props.proposal.description}</p>
+      {props.proposal.warning && <p className="notice notice--warning">{props.proposal.warning}</p>}
+      <div className="repair-values">
+        <div><span>Pôvodná hodnota</span><code>{props.proposal.before || '(prázdne)'}</code></div>
+        <div><span>Navrhovaná hodnota</span><code>{props.proposal.after || '(prázdne)'}</code></div>
+      </div>
+      <div className="actions">
+        <button type="button" onClick={props.onApply}>Použiť opravu a znovu overiť</button>
+        <button type="button" className="button--secondary" onClick={props.onSkip}>Preskočiť</button>
+      </div>
+    </section>
   );
 }

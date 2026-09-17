@@ -46,6 +46,28 @@ npm install
 npm test -- --run
 ```
 
+## Lokální React/Vite harness
+
+Pro testování uživatelského rozhraní bez SharePointu je k dispozici samostatný React/Vite harness v adresáři `local-harness`. Používá stejnou validační službu a exportní logiku jako SPFx webpart.
+
+```powershell
+cd local-harness
+npm install
+npm run dev
+```
+
+Otevřete URL, kterou vypíše Vite, obvykle `http://localhost:5173`.
+
+Lokálně lze ověřit:
+
+- výběr a drag-and-drop XML souboru,
+- validační souhrn a seznam nálezů,
+- krokované opravy s náhledem a potvrzením každého kroku,
+- finální kontrolu opraveného XML,
+- stažení opraveného XML a TXT/CSV reportů.
+
+Opravy jsou pouze deterministické a explicitně potvrzované. Neplatné IBANy a `DOCTYPE`/entity deklarace se neopravují automaticky.
+
 ## Build
 
 ```bash
@@ -76,4 +98,4 @@ Všechny soubory jsou zpracovávány lokálně v prohlížeči. Neodesílají se
 
 ## Poznámka k projektu
 
-Tato pracovní verze je připravena jako validující core layer a dokumentace. Pro plný SPFx web part je nutné dokončit scaffold v kompatibilním Node 22. Toto repo obsahuje základní návrh, AGENTS, plán a validátory, které jsou testované lokálně v Node.
+Repozitář obsahuje core validátor, SPFx webpart, lokální React/Vite harness, testy, dokumentaci a plán. Pro SPFx build a packaging používejte kompatibilní Node 22.x.

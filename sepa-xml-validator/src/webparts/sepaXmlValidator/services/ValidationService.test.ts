@@ -43,4 +43,13 @@ describe('validateSepaDocument', () => {
     expect(result.issues.some((issue) => issue.type === 'transaction-count')).toBe(true);
     expect(result.issues.some((issue) => issue.type === 'control-sum')).toBe(true);
   });
+
+  it('detects mismatched XML element names', () => {
+    const xml = '<Document><Nm>DIR - LINE s. r. o.</N></Document>';
+    const result = validateSepaDocument(xml, 'mismatched-tag.xml', xml.length);
+
+    expect(result.xmlWellFormed).toBe(false);
+    expect(result.checks[0].status).toBe('error');
+    expect(result.issues.some((issue) => issue.message.indexOf('očakáva sa </Nm>') >= 0)).toBe(true);
+  });
 });

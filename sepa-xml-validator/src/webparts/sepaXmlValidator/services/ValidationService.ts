@@ -1,5 +1,5 @@
 import { SepaValidationResult, ValidationCheck, ValidationIssue, ValidationStatus } from '../models/ValidationModels';
-import { findSuspiciousCharacters, hasDangerousXml } from '../utils/XmlUtils';
+import { findSuspiciousCharacters, findXmlStructureIssues, hasDangerousXml } from '../utils/XmlUtils';
 import { parseMoneyToCents, sumCents, formatCentsAsCurrency } from '../utils/MoneyUtils';
 
 function getAllElementsByLocalName(xml: string, localName: string): Array<{ value: string; line: number; column: number }> {
@@ -161,6 +161,7 @@ function getIssuesForControlSum(xml: string): { issues: ValidationIssue[]; calcu
 }
 
 export function validateSepaDocument(xml: string, fileName: string, fileSize: number): SepaValidationResult {
+  const structureIssues = findXmlStructureIssues(xml);
   const suspicious = findSuspiciousCharacters(xml);
   const countryIssues = getIssuesForCountry(xml);
   const ibanResult = getIssuesForIban(xml);
@@ -175,6 +176,7 @@ export function validateSepaDocument(xml: string, fileName: string, fileSize: nu
   }] : [];
 
   const issues: ValidationIssue[] = securityIssues.slice(0).concat(
+    structureIssues,
     suspicious.map(function (item) {
       return {
         type: 'suspicious-character',
@@ -195,7 +197,7 @@ export function validateSepaDocument(xml: string, fileName: string, fileSize: nu
   );
 
   const checks: ValidationCheck[] = [
-    { id: 'xml-structure', name: 'XML štruktúra', status: securityIssues.length > 0 ? 'error' : 'ok', issues: securityIssues },
+    { id: 'xml-structure', name: 'XML štruktúra', status: structureIssues.length > 0 || securityIssues.length > 0 ? 'error' : 'ok', issues: securityIssues.concat(structureIssues) },
     { id: 'special-characters', name: 'Špeciálne / neviditeľné znaky', status: suspicious.length > 0 ? 'error' : 'ok', issues: suspicious.map(function (item) {
       return {
         type: 'suspicious-character',
@@ -222,7 +224,7 @@ export function validateSepaDocument(xml: string, fileName: string, fileSize: nu
     fileSize,
     encoding: 'UTF-8',
     hasBom: xml.indexOf('\uFEFF') === 0,
-    xmlWellFormed: !hasDangerousXml(xml),
+    xmlWellFormed: !hasDangerousXml(xml) && structureIssues.length === 0,
     transactionCount: transactionResult.actual,
     declaredTransactionCount: transactionResult.declared,
     calculatedControlSum: controlSumResult.calculated,
