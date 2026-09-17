@@ -53,6 +53,33 @@ Short summary on functionality and used technologies.
 
 Other build commands can be listed using `heft --help`.
 
+## Testing the validator
+
+From the repository root, run the validation prototype tests and type-check:
+
+```powershell
+npm install
+npm test
+npm run build
+```
+
+From the `sepa-xml-validator` folder, run the SPFx tests, build, and package generation:
+
+```powershell
+npm install
+npm run build
+```
+
+The SharePoint package is generated at `sharepoint/solution/sepa-xml-validator.sppkg`.
+
+For a manual browser test, start the SPFx development server with `heft start --clean`, open the SharePoint hosted workbench, add the SEPA XML Validator web part, and test these cases:
+
+- a valid XML file with matching `Ctry`, `NbOfTxs`, and `CtrlSum`;
+- an invalid country code or IBAN;
+- mismatched transaction count or control sum;
+- XML containing `DOCTYPE` or an entity declaration;
+- TXT and CSV report downloads after validation.
+
 ## Features
 
 Description of the extension that expands upon high-level summary above.

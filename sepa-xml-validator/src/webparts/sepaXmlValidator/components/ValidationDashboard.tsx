@@ -3,9 +3,10 @@ import { SepaValidationResult } from '../models/ValidationModels';
 
 interface IValidationDashboardProps {
   result: SepaValidationResult;
+  onExport: (format: 'txt' | 'csv') => void;
 }
 
-export const ValidationDashboard: React.FC<IValidationDashboardProps> = ({ result }) => {
+export const ValidationDashboard: React.FC<IValidationDashboardProps> = ({ result, onExport }) => {
   const getStatusLabel = (status: string): string => {
     switch (status) {
       case 'ok':
@@ -34,6 +35,11 @@ export const ValidationDashboard: React.FC<IValidationDashboardProps> = ({ resul
         <li>Unikátne IBANy: {result.uniqueIbans}</li>
         <li>Neplatné IBANy: {result.invalidIbans.length}</li>
       </ul>
+
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+        <button type="button" onClick={() => onExport('txt')}>Stiahnuť TXT report</button>
+        <button type="button" onClick={() => onExport('csv')}>Stiahnuť CSV report</button>
+      </div>
 
       {result.checks.map((check) => (
         <div key={check.id} style={{ marginTop: 12, border: '1px solid #ddd', borderRadius: 8, padding: 12 }}>

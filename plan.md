@@ -26,16 +26,23 @@ For the SharePoint implementation, use:
 ## 4. Workstream B: UI and deployment
 - [x] Build a SharePoint Web Part with drag-and-drop and file selection.
 - [x] Show result dashboard, summary, file metadata, and privacy notice.
-- [ ] Prepare report export in TXT/CSV format.
+- [x] Prepare report export in TXT/CSV format.
 - [x] Package using .sppkg through the SharePoint App Catalog flow.
 
-## 5. Workstream C: Quality gates
+## 5. Workstream C: Local testing harness
+- [x] Create a standalone React/Vite test harness for browser testing without SharePoint.
+- [x] Reuse the existing validation service and report export logic without duplicating business rules.
+- [x] Add local file selection and drag-and-drop testing.
+- [ ] Verify validation results, issue list, and TXT/CSV report downloads locally.
+- [x] Add a documented start command for the local harness.
+
+## 6. Workstream D: Quality gates
 - [x] Unit tests for valid and invalid data in the core validation prototype.
 - [x] Build and type-check pass.
 - [x] Export package for SharePoint deployment when the environment supports the required Node version.
-- [ ] Add dedicated tests for the SPFx validation service and UI behavior.
+- [x] Add dedicated tests for the SPFx validation service and UI behavior.
 
-## 6. Acceptance criteria
+## 7. Acceptance criteria
 - [x] XML stays in-browser only.
 - [x] No external API calls.
 - [x] All critical checks are explicit and deterministic.
