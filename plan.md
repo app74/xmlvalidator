@@ -60,3 +60,16 @@ For the SharePoint implementation, use:
 - [x] No external API calls.
 - [x] All critical checks are explicit and deterministic.
 - [x] The project is ready for SPFx deployment, even if the active workstation must use Node 22 for the final scaffold and package step.
+
+## 8. Remaining implementation steps
+- [ ] Add dedicated component tests for file selection, validation display, repair confirmation, and report/XML download actions.
+- [ ] Upload the generated `.sppkg` package to the SharePoint App Catalog.
+- [ ] Add the web part to a SharePoint page and verify it in the hosted workbench or a real SharePoint site.
+- [ ] Run a final end-to-end test in SharePoint using valid and invalid SEPA XML files.
+- [ ] Resolve the remaining non-blocking lint warnings in `MoneyUtils.ts`, `ValidationService.ts`, and `RepairService.ts`.
+
+## 9. Optional validation extensions
+- [ ] Add complete SEPA XSD schema validation.
+- [ ] Validate all mandatory SEPA fields and element ordering.
+- [ ] Add validation for currency, dates, BIC/IBAN country consistency, and additional banking rules.
+- [ ] Document which checks are technical XML checks and which are bank-specific business rules.
