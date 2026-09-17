@@ -40,7 +40,8 @@ For the SharePoint implementation, use:
 - [x] Unit tests for valid and invalid data in the core validation prototype.
 - [x] Build and type-check pass.
 - [x] Export package for SharePoint deployment when the environment supports the required Node version.
-- [x] Add dedicated tests for the SPFx validation service and UI behavior.
+- [x] Add dedicated tests for the SPFx validation service.
+- [ ] Add dedicated component tests for file selection, validation display, and report download actions.
 
 ## 7. Acceptance criteria
 - [x] XML stays in-browser only.
