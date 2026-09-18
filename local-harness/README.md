@@ -2,6 +2,8 @@
 
 This harness runs the SEPA XML validator UI without SharePoint. It reuses the SPFx validation service and report export code, so business rules are not duplicated.
 
+Vite explicitly uses this directory's `tsconfig.json` for shared sources as well. Installing dependencies in `sepa-xml-validator` is not required to run the harness.
+
 ## Start
 
 From the repository root:
